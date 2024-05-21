@@ -92,6 +92,7 @@ void PuissanceQuatre::addScore(int nbButton, QString player)
         if (_scores[i][nbButton] == "")
         {
             _scores[i][nbButton] = player;
+            _gridRemaining--;
             if (player == "player1")
             {
                 _gridGameQlabel[i][nbButton]->setStyleSheet("background-color: #FEFE00; border-radius: 40%;");
@@ -111,6 +112,7 @@ void PuissanceQuatre::addScore(int nbButton, QString player)
             break;
         }
     }
+
 }
 
 void PuissanceQuatre::checkWin(int row, int col, QString player)
@@ -121,8 +123,14 @@ void PuissanceQuatre::checkWin(int row, int col, QString player)
         qDebug() << player << "win !";
         ui->event->setText(player + " a gagné !");
         QMessageBox::information(this, "Le puissance 4", player + " a gagné !");
-
         this->_win = true;
+    }
+
+    if (_gridRemaining == 0){
+        qDebug() << "No player win !";
+        ui->event->setText("Match nul, personne n'a gagné !");
+        QMessageBox::information(this, "Le puissance 4", "Match nul, personne n'a gagné !");
+        disableAllButton();
     }
 
     if (this->_win){disableAllButton();}

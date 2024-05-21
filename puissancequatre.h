@@ -55,6 +55,7 @@ private:
 
     static const int _ROW = 6;
     static const int _COL = 7;
+    int _gridRemaining = _ROW * _COL;
 
     // Tableau 2D de QLabel
     QLabel *_gridGameQlabel[_ROW][_COL];
