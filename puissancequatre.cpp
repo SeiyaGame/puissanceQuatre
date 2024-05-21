@@ -31,6 +31,7 @@ PuissanceQuatre::PuissanceQuatre(QWidget *parent) : QMainWindow(parent), ui(new 
 
         // DOC: https://doc.qt.io/qt-5/qcursor.html
         _gridQPushButton[i]->setCursor(Qt::ClosedHandCursor);
+        _gridQPushButton[i]->setText("V");
         ui->gridButton->addWidget(_gridQPushButton[i]);
 
         connect(_gridQPushButton[i], SIGNAL(buttonClicked(int)), this, SLOT(on_pushButton(int)));
