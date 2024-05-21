@@ -33,7 +33,7 @@ public:
 
     int randomButton();
 
-    void addScore(int nbButton, bool player);
+    void addScore(int nbButton, QString player);
 
     void checkWin(int row, int col, QString player);
 
@@ -41,6 +41,7 @@ public:
     bool checkCol(int row, int col, QString player);
     bool checkRightDiagonale(int row, int col, QString player);
     bool checkLeftDiagonale(int row, int col, QString player);
+    void onModeSelected(bool bot);
 
 private slots:
     void on_pushButton(int);
@@ -50,6 +51,7 @@ private:
     Ui::PuissanceQuatre *ui;
 
     bool _win = false;
+    bool _bot = false;
 
     static const int _ROW = 6;
     static const int _COL = 7;
@@ -62,6 +64,8 @@ private:
 
     // Tableau avec nos boutons
     QPushButtonCustom *_gridQPushButton[_COL];
+
+    QString _currentPlayer = "player1";
 };
 
 #endif // PUISSANCEQUATRE_H

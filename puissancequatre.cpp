@@ -1,5 +1,6 @@
 #include "puissancequatre.h"
 #include "ui_puissancequatre.h"
+#include "choosemode.h"
 #include <QDebug>
 
 PuissanceQuatre::PuissanceQuatre(QWidget *parent) : QMainWindow(parent), ui(new Ui::PuissanceQuatre)
@@ -35,17 +36,33 @@ PuissanceQuatre::PuissanceQuatre(QWidget *parent) : QMainWindow(parent), ui(new 
         connect(_gridQPushButton[i], SIGNAL(buttonClicked(int)), this, SLOT(on_pushButton(int)));
     }
 
-    ui->event->setText("A vous de jouer !!");
+    ChooseMode *chooseMode = new ChooseMode(this);
+    connect(chooseMode, &ChooseMode::modeSelected, this, &PuissanceQuatre::onModeSelected);
+    chooseMode->exec();
 }
 
 void PuissanceQuatre::on_pushButton(int btnCol)
 {
-    addScore(btnCol, true); // PLAYER
-    if (!_win)
-    {
-        int rdm = randomButton();
-        addScore(rdm, false); // BOT
+    addScore(btnCol, _currentPlayer); // Ajoutez le score pour le joueur actuel
 
+    if (_currentPlayer == "player1") {
+        if (_bot && !_win){
+            addScore(randomButton(), "bot");
+        }else{
+            _currentPlayer = "player2";
+        }
+    } else {
+        _currentPlayer = "player1";
+    }
+}
+
+void PuissanceQuatre::onModeSelected(bool bot)
+{
+    _bot = bot;
+    if (_bot) {
+        ui->event->setText("Vous jouez contre le Bot. A vous de jouer !!");
+    } else {
+        ui->event->setText("Vous jouez contre un autre joueur. A vous de jouer !!");
     }
 }
 
@@ -68,23 +85,22 @@ int PuissanceQuatre::randomButton()
     return random;
 }
 
-void PuissanceQuatre::addScore(int nbButton, bool player)
+void PuissanceQuatre::addScore(int nbButton, QString player)
 {
     for (int i = _ROW - 1; i >= 0; i--)
     {
         if (_scores[i][nbButton] == "")
         {
-            if (player)
+            _scores[i][nbButton] = player;
+            if (player == "player1")
             {
-                _scores[i][nbButton] = "player";
                 _gridGameQlabel[i][nbButton]->setStyleSheet("background-color: #FEFE00; border-radius: 40%;");
-                checkWin(i, nbButton, "player");
+                checkWin(i, nbButton, player);
             }
-            else
+            else if (player == "player2" or player == "bot")
             {
-                _scores[i][nbButton] = "bot";
                 _gridGameQlabel[i][nbButton]->setStyleSheet("background-color: #FE0009; border-radius: 40%;");
-                checkWin(i, nbButton, "bot");
+                checkWin(i, nbButton, player);
             }
 
             if (i == 0)
@@ -104,23 +120,12 @@ void PuissanceQuatre::checkWin(int row, int col, QString player)
     {
         qDebug() << player << "win !";
         ui->event->setText(player + " a gagné !");
-
-        if (player == "player")
-        {
-            QMessageBox::information(this, "Le puissance 4", "Trop fort !!!");
-        }
-        else
-        {
-            QMessageBox::warning(this, "Le puissance 4", "Vous êtes vraiment pas très bon !!!");
-        }
+        QMessageBox::information(this, "Le puissance 4", player + " a gagné !");
 
         this->_win = true;
     }
 
-    if (this->_win)
-    {
-        disableAllButton();
-    }
+    if (this->_win){disableAllButton();}
 }
 
 bool PuissanceQuatre::checkRightDiagonale(int row, int col, QString player)
