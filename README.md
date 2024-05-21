@@ -1,7 +1,9 @@
 # Puissance 4
 
-Made with [Guetom](https://github.com/Guetom)
+Made with [Guetom](https://github.com/Guetom)  
 This is a reupload of the project I did at school
+
+![](puissanceQuatre.png | width=150)
 
 ## Introduction
 
